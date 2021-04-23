@@ -16,13 +16,22 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.resource('users', 'UserController').apiOnly();
-Route.post('/session', 'SessionController.store');
+Route.resource('users', 'UserController').apiOnly().validator(new Map(
+  [
+    [
+      ['users.store'],
+      ['users/UserCreate']
+    ],
+    [
+      ['users.update'],
+      ['users/UserUpdate']
+    ]
+  ]
+));
 
-Route.group( () => {
+Route.post('/sessions', 'SessionController.store');
 
-Route.resource('games', 'GameController').apiOnly();
-
-Route.resource('bets.games', 'BetController').apiOnly();
-
+Route.group(() => {
+  Route.resource('games', 'GameController').apiOnly();
+  Route.resource('bets.games', 'BetController').apiOnly();
 }).middleware(['auth']);
