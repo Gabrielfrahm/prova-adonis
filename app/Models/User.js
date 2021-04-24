@@ -10,6 +10,7 @@ class User extends Model {
   static boot() {
     super.boot()
 
+
     /**
      * A hook to hash the user password before saving
      * it to the database.
@@ -19,6 +20,7 @@ class User extends Model {
         userInstance.password = await Hash.make(userInstance.password)
       }
     })
+
   }
   static get hidden() {
     return ['password'];

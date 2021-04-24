@@ -4,8 +4,8 @@ const Token = use('App/Models/Token');
 const User = use('App/Models/User');
 class SessionController {
   async store({ request, response, auth }) {
+    const { email, password } = request.all();
     try {
-      const { email, password } = request.all();
       const user = await User.findByOrFail('email', email);
 
       const token = await auth.attempt(email, password);

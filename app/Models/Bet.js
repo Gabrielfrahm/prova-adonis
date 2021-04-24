@@ -4,11 +4,18 @@
 const Model = use('Model')
 
 class Bet extends Model {
-  user(){
+  static boot() {
+    super.boot()
+
+    this.addHook('afterCreate', 'SendMailHook.sendMail');
+    this.addHook('beforeUpdate', 'SendMailHook.sendMail');
+  }
+
+  user() {
     return this.belongsTo('App/Models/User');
   }
 
-  game(){
+  game() {
     return this.belongsTo('App/Models/User');
   }
 }

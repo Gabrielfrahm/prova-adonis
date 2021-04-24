@@ -29,6 +29,9 @@ Route.resource('users', 'UserController').apiOnly().validator(new Map(
   ]
 ));
 
+Route.post('forgot-Password', 'ForgotPasswordController.store').validator('ForgotPassword');
+Route.put('reset-password', 'ForgotPasswordController.update').validator('ResetPassword');
+
 Route.post('/sessions', 'SessionController.store');
 
 Route.group(() => {
