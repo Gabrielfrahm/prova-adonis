@@ -19,10 +19,11 @@ class GameController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index({ request, response, view }) {
+    const { page } = request.get();
+    const games = await Game.query().paginate(page);
+    return games;
   }
-
-
 
   /**
    * Create/save a new game.
@@ -32,7 +33,7 @@ class GameController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store({ request, response }) {
     const data = request.only([
       'type',
       'description',
@@ -43,11 +44,13 @@ class GameController {
       'range',
     ]);
 
+    const checkGame = await Game.findBy('type', data.type);
+    if (checkGame) {
+      return response.status(401).send({ error: { message: 'Game already existing' } });
+    }
+
     const game = await Game.create(data);
-
     return game;
-
-
   }
 
   /**
@@ -59,7 +62,14 @@ class GameController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show({ params, request, response, view }) {
+    const game = await Game.findBy('id', params.id);
+
+    if(!game){
+      return response.status(401).send({ error: { message: 'Game not  found' } });
+    }
+    return game;
+
   }
 
 
@@ -71,7 +81,27 @@ class GameController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update({ params, request, response }) {
+    const game = await Game.findBy('id', params.id);
+
+    if(!game){
+      return response.status(401).send({ error: { message: 'Game not  found' } });
+    }
+
+    const data = request.only([
+      'type',
+      'description',
+      'color',
+      'price',
+      'minCartValue',
+      'maxNumber',
+      'range',
+    ]);
+
+    game.merge(data);
+    await game.save();
+    return game;
+
   }
 
   /**
@@ -82,7 +112,14 @@ class GameController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy({ params, response }) {
+    const game = await Game.findBy('id', params.id);
+
+    if(!game){
+      return response.status(401).send({ error: { message: 'Game not  found' } });
+    }
+    await game.delete();
+    return  response.status(200).send({ message: 'game deleted success'  });
   }
 }
 

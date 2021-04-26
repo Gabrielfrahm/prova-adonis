@@ -36,5 +36,5 @@ Route.post('/sessions', 'SessionController.store');
 
 Route.group(() => {
   Route.resource('games', 'GameController').apiOnly();
-  Route.resource('bets.games', 'BetController').apiOnly();
+  Route.resource('game.bets', 'BetController').apiOnly();
 }).middleware(['auth']);

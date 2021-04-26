@@ -21,6 +21,7 @@ class User extends Model {
       }
     })
 
+    this.addHook('afterCreate', 'sendMailCreatedUserHook.sendMail');
   }
   static get hidden() {
     return ['password'];

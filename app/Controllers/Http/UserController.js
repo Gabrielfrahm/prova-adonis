@@ -6,8 +6,6 @@ class UserController {
   async index({ request }) {
     const { page } = request.get();
     const users = await User.query().paginate(page);
-
-
     return users;
   }
 
@@ -19,19 +17,6 @@ class UserController {
       return response.status(401).send({ error: { message: 'user already existing' } })
     }
     const user = await User.create({name, email , password});
-
-    await Mail.send(
-      ['emails.signUp'],
-      {
-        name,
-      },
-      message => {
-        message
-          .to(email)
-          .from('notResponde@TLG.com', 'Equipe TLG | <>')
-          .subject('cadastro na plataforma')
-      }
-    )
 
     return user;
   }
