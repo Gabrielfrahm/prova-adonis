@@ -14,12 +14,13 @@ class NewBetSendMail {
   }
 
   // This is where the work is done.
-  async handle ({name, email}) {
-    console.log(`job: ${NewBetSendMail.key}`)
+  async handle ({name, email, type }) {
+    console.log(`job: ${NewBetSendMail.key}`);
     await Mail.send(
       ['emails.new_bet'],
       {
         name,
+        type
       },
       message => {
         message
