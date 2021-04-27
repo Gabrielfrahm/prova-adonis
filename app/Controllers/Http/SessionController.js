@@ -18,7 +18,7 @@ class SessionController {
       }
       return;
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'erro ou tentar fazer login check suas credenciais' } })
+      return response.status(err.status).send({ error: { message: 'erro ao tentar fazer login check suas credenciais' } })
     }
   }
 }

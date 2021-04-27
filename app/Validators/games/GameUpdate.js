@@ -2,7 +2,7 @@
 
 const Antl = use('Antl');
 
-class gamesGameCreate {
+class gamesGameUpdate {
   get validateAll() {
     return true;
   }
@@ -26,4 +26,4 @@ class gamesGameCreate {
   }
 }
 
-module.exports = gamesGameCreate
+module.exports = gamesGameUpdate

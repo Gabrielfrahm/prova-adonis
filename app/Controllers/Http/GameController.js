@@ -19,10 +19,15 @@ class GameController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view }) {
-    const { page } = request.get();
-    const games = await Game.query().paginate(page);
-    return games;
+  async index({ request, response, auth }) {
+    try {
+      const { page } = request.get();
+      const games = await Game.query().paginate(page);
+      return games;
+    } catch (err) {
+      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
+    }
+
   }
 
   /**
@@ -34,23 +39,27 @@ class GameController {
    * @param {Response} ctx.response
    */
   async store({ request, response }) {
-    const data = request.only([
-      'type',
-      'description',
-      'color',
-      'price',
-      'minCartValue',
-      'maxNumber',
-      'range',
-    ]);
+    try {
+      const data = request.only([
+        'type',
+        'description',
+        'color',
+        'price',
+        'minCartValue',
+        'maxNumber',
+        'range',
+      ]);
 
-    const checkGame = await Game.findBy('type', data.type);
-    if (checkGame) {
-      return response.status(401).send({ error: { message: 'Game already existing' } });
+      const checkGame = await Game.findBy('type', data.type);
+      if (checkGame) {
+        return response.status(401).send({ error: { message: 'Game already existing' } });
+      }
+
+      const game = await Game.create(data);
+      return game;
+    } catch (err) {
+      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
     }
-
-    const game = await Game.create(data);
-    return game;
   }
 
   /**
@@ -63,12 +72,16 @@ class GameController {
    * @param {View} ctx.view
    */
   async show({ params, request, response, view }) {
-    const game = await Game.findBy('id', params.id);
+    try {
+      const game = await Game.findBy('id', params.id);
 
-    if(!game){
-      return response.status(401).send({ error: { message: 'Game not  found' } });
+      if (!game) {
+        return response.status(401).send({ error: { message: 'Game not  found' } });
+      }
+      return game;
+    } catch (err) {
+      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
     }
-    return game;
 
   }
 
@@ -82,25 +95,29 @@ class GameController {
    * @param {Response} ctx.response
    */
   async update({ params, request, response }) {
-    const game = await Game.findBy('id', params.id);
+    try {
+      const game = await Game.findBy('id', params.id);
 
-    if(!game){
-      return response.status(401).send({ error: { message: 'Game not  found' } });
+      if (!game) {
+        return response.status(401).send({ error: { message: 'Game not  found' } });
+      }
+
+      const data = request.only([
+        'type',
+        'description',
+        'color',
+        'price',
+        'minCartValue',
+        'maxNumber',
+        'range',
+      ]);
+
+      game.merge(data);
+      await game.save();
+      return game;
+    } catch (err) {
+      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
     }
-
-    const data = request.only([
-      'type',
-      'description',
-      'color',
-      'price',
-      'minCartValue',
-      'maxNumber',
-      'range',
-    ]);
-
-    game.merge(data);
-    await game.save();
-    return game;
 
   }
 
@@ -113,13 +130,17 @@ class GameController {
    * @param {Response} ctx.response
    */
   async destroy({ params, response }) {
-    const game = await Game.findBy('id', params.id);
+    try {
+      const game = await Game.findBy('id', params.id);
 
-    if(!game){
-      return response.status(401).send({ error: { message: 'Game not  found' } });
+      if (!game) {
+        return response.status(401).send({ error: { message: 'Game not  found' } });
+      }
+      await game.delete();
+      return response.status(200).send({ message: 'game deleted success' });
+    } catch (err) {
+      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
     }
-    await game.delete();
-    return  response.status(200).send({ message: 'game deleted success'  });
   }
 }
 

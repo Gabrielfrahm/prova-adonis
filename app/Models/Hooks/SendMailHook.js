@@ -9,7 +9,7 @@ SendMailHook.sendMail = async (emailInstance) => {
 
   const {name, email} = await emailInstance.user().fetch();
 
-  Kue.dispatch(Job.key, {name, email, type}, {
+  Kue.dispatch(Job.key, {name, email}, {
     attempts: 3
   });
 }

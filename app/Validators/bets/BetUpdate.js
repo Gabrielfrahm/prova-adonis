@@ -2,7 +2,7 @@
 
 const Antl = use('Antl');
 
-class betsBetCreate {
+class betsBetUpdate {
   get validateAll() {
     return true;
   }
@@ -22,4 +22,4 @@ class betsBetCreate {
   }
 }
 
-module.exports = betsBetCreate
+module.exports = betsBetUpdate

@@ -29,12 +29,34 @@ Route.resource('users', 'UserController').apiOnly().validator(new Map(
   ]
 ));
 
-Route.post('forgot-Password', 'ForgotPasswordController.store').validator('ForgotPassword');
-Route.put('reset-password', 'ForgotPasswordController.update').validator('ResetPassword');
+Route.post('forgot-Password', 'ForgotPasswordController.store').validator('forgot-password/ForgotPassword');
+Route.put('reset-password', 'ForgotPasswordController.update').validator('forgot-password/ResetPassword');
 
-Route.post('/sessions', 'SessionController.store');
+Route.post('/sessions', 'SessionController.store').validator('session/Session');
 
 Route.group(() => {
-  Route.resource('games', 'GameController').apiOnly();
-  Route.resource('game.bets', 'BetController').apiOnly();
+  Route.resource('games', 'GameController').apiOnly().validator(new Map(
+    [
+      [
+        ['games.store'],
+        ['games/GameCreate']
+      ],
+      [
+        ['games.update'],
+        ['games/GameUpdate']
+      ]
+    ]
+  ));
+  Route.resource('game.bets', 'BetController').apiOnly().validator(new Map (
+    [
+      [
+        ['game.bets.store'],
+        ['bets/BetCreate']
+      ],
+      [
+        ['game.bets.update'],
+        ['bets/BetUpdate']
+      ]
+    ]
+  ));
 }).middleware(['auth']);

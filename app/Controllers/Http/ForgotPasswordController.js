@@ -7,28 +7,31 @@ const Mail = use('Mail');
 
 class ForgotPasswordController {
   async store({ request, }) {
+    try {
+      const email = request.input('email');
+      const user = await User.findByOrFail('email', email);
 
-    const email = request.input('email');
-    const user = await User.findByOrFail('email', email);
+      if (!user) {
+        throw new Error('user not found');
+      }
 
-    if (!user) {
-      throw new Error('user not found');
+      user.token = crypto.randomBytes(10).toString('hex');
+      user.token_created_at = new Date();
+
+      await user.save();
+      await Mail.send(['emails.forgot_password'], {
+        email,
+        token: user.token,
+        link: `http://localhost:3000/reset-password?token=${user.token}`
+      }, message => {
+        message
+          .to(user.email)
+          .from('gabriel.frahm@luby.software')
+          .subject('Recuperação de senha')
+      });
+    } catch (err) {
+      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
     }
-
-    user.token = crypto.randomBytes(10).toString('hex');
-    user.token_created_at = new Date();
-
-    await user.save();
-    await Mail.send(['emails.forgot_password'], {
-      email,
-      token: user.token,
-      link: `http://localhost:3000/reset-password?token=${user.token}`
-    }, message => {
-      message
-        .to(user.email)
-        .from('gabriel.frahm@luby.software')
-        .subject('Recuperação de senha')
-    });
   }
 
   async update({ request, response }) {
