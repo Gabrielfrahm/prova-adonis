@@ -21,8 +21,9 @@ class GameController {
    */
   async index({ request, response, auth }) {
     try {
-      const { page } = request.get();
-      const games = await Game.query().paginate(page);
+      // const { page } = request.get();
+      // const games = await Game.query().paginate(page);
+      const games = await Game.all();
       return games;
     } catch (err) {
       return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
