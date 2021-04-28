@@ -47,16 +47,10 @@ Route.group(() => {
       ]
     ]
   ));
-  Route.resource('game.bets', 'BetController').apiOnly().validator(new Map (
-    [
-      [
-        ['game.bets.store'],
-        ['bets/BetCreate']
-      ],
-      [
-        ['game.bets.update'],
-        ['bets/BetUpdate']
-      ]
-    ]
-  ));
+  Route.get('game/bets/:game_id?', 'BetController.index');
+  Route.get('game/bets/:game_id/:id', 'BetController.show');
+  Route.post('game/bets', 'BetController.store');
+  Route.put('game/bets/:game_id', 'BetController.update').validator('bets/BetUpdate');
+  Route.delete('game/bets/:game_id', 'BetController.delete');
+
 }).middleware(['auth']);
