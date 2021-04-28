@@ -9,45 +9,32 @@ class UserController {
       const users = await User.query().paginate(page);
       return users;
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
+      return response.status(err.status).send({ error: { message: err.message } });
     }
   }
 
   async store({ request , response}) {
     try {
       const { name, email, password } = request.only(['name', 'email', 'password']);
-
-      const checkUser = await User.findBy('email', email);
-      if (checkUser) {
-        return response.status(401).send({ error: { message: 'user already existing' } })
-      }
       const user = await User.create({ name, email, password });
-
       return user;
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
+      return response.status(err.status).send({ error: { message: err.message } });
     }
   }
 
   async show({ params, response }) {
     try {
-      const user = await User.findBy('id', params.id);
-      if (!user) {
-        return response.status(400).send({ error: { message: 'user not found' } });
-      }
+      const user = await User.findByOrFail('id', params.id);
       return user;
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
+      return response.status(err.status).send({ error: { message: err.message } });
     }
   }
 
   async update({ params, request, response }) {
     try {
-      const user = await User.findBy('id', params.id);
-
-      if (!user) {
-        return response.status(400).send({ error: { message: 'user not found' } });
-      }
+      const user = await User.findByOrFail('id', params.id);
 
       const data = request.only(['name', 'email', 'password']);
 
@@ -56,21 +43,17 @@ class UserController {
       await user.save();
       return user;
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
+      return response.status(err.status).send({ error: { message: err.message } });
     }
   }
 
   async destroy({ params, response }) {
     try {
-      const user = await User.findBy('id', params.id);
-
-      if (!user) {
-        return response.status(400).send({ error: { message: 'user not found' } });
-      }
+      const user = await User.findByOrFail('id', params.id);
       await user.delete();
       return response.status(200).send( {message: 'Delete' });
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
+      return response.status(err.status).send({ error: { message: err.message } });
     }
   }
 }

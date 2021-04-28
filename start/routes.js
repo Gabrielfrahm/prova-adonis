@@ -16,6 +16,11 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+Route.post('forgot-Password', 'ForgotPasswordController.store').validator('forgot-password/ForgotPassword');
+Route.put('reset-password', 'ForgotPasswordController.update').validator('forgot-password/ResetPassword');
+
+Route.post('/sessions', 'SessionController.store').validator('session/Session');
+
 Route.resource('users', 'UserController').apiOnly().validator(new Map(
   [
     [
@@ -28,11 +33,6 @@ Route.resource('users', 'UserController').apiOnly().validator(new Map(
     ]
   ]
 ));
-
-Route.post('forgot-Password', 'ForgotPasswordController.store').validator('forgot-password/ForgotPassword');
-Route.put('reset-password', 'ForgotPasswordController.update').validator('forgot-password/ResetPassword');
-
-Route.post('/sessions', 'SessionController.store').validator('session/Session');
 
 Route.group(() => {
   Route.resource('games', 'GameController').apiOnly().validator(new Map(
@@ -51,6 +51,6 @@ Route.group(() => {
   Route.get('game/bets/:game_id/:id', 'BetController.show');
   Route.post('game/bets', 'BetController.store');
   Route.put('game/bets/:game_id', 'BetController.update').validator('bets/BetUpdate');
-  Route.delete('game/bets/:game_id', 'BetController.delete');
+  Route.delete('game/bets/:id', 'BetController.destroy');
 
 }).middleware(['auth']);

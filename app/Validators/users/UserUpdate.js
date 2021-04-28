@@ -7,11 +7,13 @@ class usersUserCreate {
 
 
   get rules () {
+    const userId = this.ctx.params.id;
     return {
       // validation rules
       name: 'required',
-      email: 'required|email|unique:users',
+      email: `unique:users,email,id,${userId}`,
       password: 'required|confirmed',
+
     }
   }
 }

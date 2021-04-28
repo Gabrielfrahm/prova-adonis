@@ -6,14 +6,10 @@ const User = use('App/Models/User');
 const Mail = use('Mail');
 
 class ForgotPasswordController {
-  async store({ request, }) {
+  async store({ request, response }) {
     try {
       const email = request.input('email');
       const user = await User.findByOrFail('email', email);
-
-      if (!user) {
-        throw new Error('user not found');
-      }
 
       user.token = crypto.randomBytes(10).toString('hex');
       user.token_created_at = new Date();
@@ -30,7 +26,7 @@ class ForgotPasswordController {
           .subject('Recuperação de senha')
       });
     } catch (err) {
-      return response.status(err.status).send({ error: { message: 'Algo deu errado' } });
+      return response.status(err.status).send({ error: { message: err.message } });
     }
   }
 

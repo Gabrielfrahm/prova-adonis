@@ -7,8 +7,8 @@ class Bet extends Model {
   static boot() {
     super.boot()
 
-    this.addHook('afterCreate', 'SendMailHook.sendMail');
-    this.addHook('beforeUpdate', 'SendMailHook.sendMail');
+    // this.addHook('afterCreate', 'SendMailHook.sendMail');
+    // this.addHook('beforeUpdate', 'SendMailHook.sendMail');
   }
 
   user() {
