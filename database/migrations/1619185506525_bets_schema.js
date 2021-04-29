@@ -24,7 +24,7 @@ class BetsSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       table.string('numbers').notNullable()
-      table.decimal('price').notNullable()
+      table.double('price').notNullable()
       table.timestamps()
     })
   }

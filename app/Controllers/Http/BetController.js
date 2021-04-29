@@ -1,6 +1,7 @@
 'use strict'
 
 const Bet = use('App/Models/Bet');
+const Game = use('App/Models/Game');
 const Mail = use('Mail');
 class BetController {
 
@@ -29,14 +30,18 @@ class BetController {
         ["itemInCart"]
       );
 
-      let games = [];
+      const games = [];
 
       const user = await auth.getUser(response.header);
 
       for (let i = 0; i < arrayGame.itemInCart.length; i++) {
         const checkBet = await Bet.findBy({ user_id: arrayGame.itemInCart[i].user_id, numbers: arrayGame.itemInCart[i].numbers });
+        const game = await Game.findByOrFail( {id: arrayGame.itemInCart[i].game_id } );
+        console.log(arrayGame.itemInCart[i].game_id)
         if (checkBet) {
-          return response.status(400).send({ error: { message: 'you already have these numbers for the bet' } });
+          return response.status(400).send({ error: { message:
+            `you already have these numbers for the bet  (Game: ${game.type}: ${arrayGame.itemInCart[i].numbers})`
+          } });
         }
         const arr = arrayGame.itemInCart[i].numbers.split(',');
         if (new Set(arr).size !== arr.length) {
@@ -91,12 +96,13 @@ class BetController {
         'numbers',
         'price',
       ]);
-      const bet = await Bet.findBy('id', params.id);
+      const bet = await Bet.query().where('id', params.id).firstOrFail();
       bet.merge(data);
+
       await bet.save();
       return bet;
     } catch (err) {
-      return response.status(err.status).send({ error: { message: err.message } });
+      return response.status(400).send({ error: { message: err.message } });
     }
 
   }

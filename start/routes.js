@@ -13,7 +13,7 @@
 |
 */
 
-/** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
+
 const Route = use('Route')
 
 Route.post('forgot-Password', 'ForgotPasswordController.store').validator('forgot-password/ForgotPassword');
@@ -50,7 +50,7 @@ Route.group(() => {
   Route.get('game/bets/:game_id?', 'BetController.index');
   Route.get('game/bets/:game_id/:id', 'BetController.show');
   Route.post('game/bets', 'BetController.store');
-  Route.put('game/bets/:game_id', 'BetController.update').validator('bets/BetUpdate');
+  Route.put('game/bets/:id', 'BetController.update').validator('bets/BetUpdate');
   Route.delete('game/bets/:id', 'BetController.destroy');
 
 }).middleware(['auth']);

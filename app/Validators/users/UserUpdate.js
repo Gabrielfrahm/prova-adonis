@@ -5,7 +5,6 @@ class usersUserCreate {
     return true;
   }
 
-
   get rules () {
     const userId = this.ctx.params.id;
     return {
