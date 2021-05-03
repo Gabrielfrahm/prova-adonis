@@ -4,8 +4,22 @@
       <strong style="color:#B5C401;font-size:20px;font-style:italic;font-weight:bold;">
         Fala {{name}}, beleza
       </strong>
-      <p>Um novo jogo foi assinada por voce</p>
-      <p>{{games}}</p>
+      <p>Uma nova aposta foi assinada por voce</p>
+      <table style="border: 1px solid black; borderCollapse: collapse;">
+        <tr>
+          <th style="border: 1px solid black;padding: 5px; textAlign: center">type</th>
+          <th style="border: 1px solid black;padding: 5px; textAlign: center">numbers</th>
+          <th style="border: 1px solid black;padding: 5px; textAlign: center">price</th>
+        </tr>
+
+          @each(game in games)
+            <tr>
+              <td style="border: 1px solid black;padding: 5px; textAlign: center">{{game.type}}</td>
+              <td style="border: 1px solid black;padding: 5px; textAlign: center">{{game.numbers}}</td>
+              <td style="border: 1px solid black;padding: 5px; textAlign: center">{{game.price}}</td>
+            </tr>
+          @endeach
+      </table>
     </div>
   </div>
 </body>

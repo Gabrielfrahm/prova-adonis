@@ -12,10 +12,13 @@ class BetController {
         const filterBets = await Bet.query().where({
           'game_id': params.game_id,
           'user_id': user.id,
-        }).fetch();
+        }).orderBy('id', 'desc').with(
+          'game'
+        ).fetch();
+
         return filterBets;
       } else {
-        const bets = await Bet.query().where('user_id', user.id).fetch();
+        const bets = await Bet.query().where('user_id', user.id).orderBy('created_at', 'desc').with('game').fetch();
         return bets;
       }
 
@@ -30,14 +33,14 @@ class BetController {
         ["itemInCart"]
       );
 
-      const games = [];
+      let games = [];
 
       const user = await auth.getUser(response.header);
 
       for (let i = 0; i < arrayGame.itemInCart.length; i++) {
         const checkBet = await Bet.findBy({ user_id: arrayGame.itemInCart[i].user_id, numbers: arrayGame.itemInCart[i].numbers });
         const game = await Game.findByOrFail( {id: arrayGame.itemInCart[i].game_id } );
-        console.log(arrayGame.itemInCart[i].game_id)
+
         if (checkBet) {
           return response.status(400).send({ error: { message:
             `you already have these numbers for the bet  (Game: ${game.type}: ${arrayGame.itemInCart[i].numbers})`
@@ -48,9 +51,11 @@ class BetController {
           return response.status(400).send({ error: { message: `you have number repete` } })
         }
         games.push({
-          numbers: arrayGame.itemInCart[i].numbers,
-          price: arrayGame.itemInCart[i].price,
-        });
+          type: game.type,
+          numbers: (arrayGame.itemInCart[i].numbers),
+          price :(arrayGame.itemInCart[i].price),
+        })
+
       }
 
       const bet = await Bet.createMany(arrayGame.itemInCart);
@@ -59,7 +64,7 @@ class BetController {
         ['emails.new_bet'],
         {
           name: user.name ,
-          games: JSON.stringify(games),
+          games: games,
         },
         message => {
           message

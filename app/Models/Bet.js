@@ -6,9 +6,6 @@ const Model = use('Model')
 class Bet extends Model {
   static boot() {
     super.boot()
-
-    // this.addHook('afterCreate', 'SendMailHook.sendMail');
-    // this.addHook('beforeUpdate', 'SendMailHook.sendMail');
   }
 
   user() {
@@ -16,7 +13,7 @@ class Bet extends Model {
   }
 
   game() {
-    return this.belongsTo('App/Models/User');
+    return this.belongsTo('App/Models/Game');
   }
 }
 
